@@ -16,13 +16,51 @@ export default function Authenticated({ user, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800"/>
                                 </Link>
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
+                                </NavLink>
+                            </div>
+
+                            {user.role === 2 &&
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('users.index')} active={route().current('users.*')}>
+                                        Users
+                                    </NavLink>
+                                </div>
+                            }
+
+                            {user.role === 2 &&
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('specialities.index')} active={route().current('specialities.*')}>
+                                        Specialities
+                                    </NavLink>
+                                </div>
+                            }
+
+                            {user.role === 0 &&
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('grades.index')} active={route().current('grades.index')}>
+                                        Grades
+                                    </NavLink>
+                                </div>
+                            }
+
+                            {user.role === 1 &&
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('student.index')} active={route().current('student.index')}>
+                                        Students
+                                    </NavLink>
+                                </div>
+                            }
+
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('subject.index')} active={route().current('subject.*') }>
+                                    Subjects
                                 </NavLink>
                             </div>
                         </div>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Speciality;
+use App\Models\Student;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +20,18 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $speciality = null;
+
+        if (auth()->user()->role === 0)
+        {
+            $userStudent = Student::where('user_id', auth()->user()->id)->first();
+            $speciality = Speciality::find($userStudent->speciality_id);
+        }
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'speciality' => $speciality,
+            'specialities' => Speciality::all(),
         ]);
     }
 
@@ -37,7 +48,22 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('message', 'Successfully updated user information.');
+    }
+
+    public function updateUserInfo(Request $request): RedirectResponse
+    {
+        $request->user()->fill($request->toArray());
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('message', 'Successfully updated user data.');
+    }
+
+    public function updateSpeciality(Request $request): RedirectResponse
+    {
+        Student::where('user_id', auth()->user()->id)->update(['speciality_id' => $request->speciality_id]);
+
+        return Redirect::route('profile.edit')->with('message', 'Successfully updated speciality.');
     }
 
     /**
